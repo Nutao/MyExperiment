@@ -1,5 +1,5 @@
 close all;clear all;clc;
-I = imread('C:\Users\cheng\Desktop\p.JPG');
+I = imread('C:\Users\cheng\Desktop\Experiment\test\p.JPG');
 I = rgb2gray(I);   %转化为灰度图像
 % subplot(221);imshow(I);title('原图灰度图');
 % subplot(222);imhist(I);title('原图灰度直方图');
@@ -83,5 +83,65 @@ for a = 1:j
 end
 fprintf('图中一共有%d个纱管',count);
 
+%此模块用于判断各个纱筒的位置，并且精确截取每根纱管
+%思想：根据垂直投影计算每一根纱管宽度，存入六个细胞数组中
+%每个细胞数组中存入每根纱管的起始位置
+MatOfPic_List = cell(1,count);   %创建一个细胞数组，一行六列
+flag =0;
+c = 1;
+for a = 1:j
+    if X(1,a) ~= 0
+        MatOfPic_List{c} = [MatOfPic_List{c} a];
+        flag = 1;
+    else if X(1,a) == 0 && flag == 1
+            flag =0;
+            [row,list] = size(MatOfPic_List{c});   %row 为行，list为列
+            if list > 200;   %如果列数大于200，才转入下一个细胞数组
+                c = c + 1;
+            else             %否则就在这个数组中执行下次循环。会过滤掉其中像素为0的点
+                continue;   
+            end
+            if c > count   %当c超出纱管数目的时候，循环直接终止
+                break;
+            end
+         end
+    end
+end
 
+%利用上面垂直投影确定的每根纱管的范围
+%截取出每一根纱管， 进行水平投影计算纱管高度
+%然后确定每根纱管的位置
+%========================================================
+%测试第一根
+%     [row_1,list] = size(MatOfPic_List{1});
+%     xmin = MatOfPic_List{1}(1);
+%     figure;subimage(bw);title('去孔图像');
+%     %在指定位置上绘出矩形，Position有四个参数，分别为：起始点列、行，矩形宽，高
+%     rectangle('Position',[xmin,0,list,3000],'EdgeColor','r');   
+%========================================================
+MatOfPic_Crop = cell(1,count);
+% figure;subimage(bw);title('绘出确定边缘的图');
+for c = 1:count
+    [row_1,list] = size(MatOfPic_List{c});
+    xmin = MatOfPic_List{c}(1);
+    xmax = MatOfPic_List{c}(list);
+    
+    %将原图指定处的数据写入用于存储细胞矩阵
+    MatOfPic_Crop{c} = bw(:,xmin:xmax);
+%     %在原图上绘出标记
+%     rectangle('Position',[xmin,0,list,3000],'EdgeColor','r');
+end
+
+%将截取出的纱管每一根写入一张图
+% imwrite(MatOfPic_Crop{1},'C:\Users\cheng\Desktop\Experiment\test\1.jpg');
+% imwrite(MatOfPic_Crop{2},'C:\Users\cheng\Desktop\Experiment\test\2.jpg');
+% imwrite(MatOfPic_Crop{3},'C:\Users\cheng\Desktop\Experiment\test\3.jpg');
+% imwrite(MatOfPic_Crop{4},'C:\Users\cheng\Desktop\Experiment\test\4.jpg');
+% imwrite(MatOfPic_Crop{5},'C:\Users\cheng\Desktop\Experiment\test\5.jpg');
+% imwrite(MatOfPic_Crop{6},'C:\Users\cheng\Desktop\Experiment\test\6.jpg');
+% 显示截出的每一张图
+for c = 1:count
+    figure;imshow(MatOfPic_Crop{c});
+end
+disp('已完成截图存图操作');
     
