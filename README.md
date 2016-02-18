@@ -1,5 +1,5 @@
 # MyExperiment
-PtternRcognition
+PatternRcognition
 
 # 预处理步骤：
 1. 将rgb图像转化为灰度图像;
