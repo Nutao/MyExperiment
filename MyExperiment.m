@@ -140,9 +140,9 @@ end
 % imwrite(MatOfPic_Crop{5},'C:\Users\cheng\Desktop\Experiment\test\5.jpg');
 % imwrite(MatOfPic_Crop{6},'C:\Users\cheng\Desktop\Experiment\test\6.jpg');
 % ÏÔÊ¾½Ø³öµÄÃ¿Ò»ÕÅÍ¼
-for c = 1:count
-    figure;imshow(MatOfPic_Crop{c});
-end
+% for c = 1:count
+%     figure;imshow(MatOfPic_Crop{c});
+% end
 disp('ÒÑÍê³É½ØÍ¼´æÍ¼²Ù×÷');
 disp('ÏÖÔÚ¿ªÊ¼½ÃÕıÍ¼Ïñ');
 
@@ -160,8 +160,8 @@ a = zeros(2,6); %ÓÃÀ´´æ·ÅÃ¿´ÎĞ£ÕıÍ¼µÄÍ¶Ó°ÓĞĞ§¿í¶È£¬ÒÔ×÷±È¶Ô¡£µÚÒ»ĞĞÓÃÓÚ´æ·ÅµÚÒ»´
 
 for c = 1:count
     flag = 0;   %Ñ­»·ÖÕÖ¹Ìõ¼ş
-    count = 0;  %¼ÆÊıÇóÍ¶Ó°ÓĞĞ§ÇøÓòµÄ¿í¶È
-    
+    width = 0;  %¼ÆÊıÇóÍ¶Ó°ÓĞĞ§ÇøÓòµÄ¿í¶È
+    figure;subplot(131);imshow(MatOfPic_Crop{c});title('½ÃÕıÇ°');
     %=======================================================
     %´Ë¿éÓÃÓÚÅĞ¶ÏÍ¼ÏñÖĞÉ´¹ÜµÄÆ«Ïò
     %=======================================================
@@ -169,22 +169,22 @@ for c = 1:count
     [~,l] = size(X);
     for b = 1:l
         if X(1,b) ~= 0              %¼ÆÊıÇó¿í¶È
-           count = count + 1;
+           width = width + 1;
         end
     end
-    a(3,c) = count;     %aÊı×éµÚÈıĞĞÓÃÓÚ´æ´¢ÅĞ¶ÏÊ±½øĞĞ²âÊÔĞÔµÄ¡¾ÄæÊ±ÕëĞı×ª¡¿ºóĞı×ª¿í¶È
-    count = 0;
+    a(3,c) = width;     %aÊı×éµÚÈıĞĞÓÃÓÚ´æ´¢ÅĞ¶ÏÊ±½øĞĞ²âÊÔĞÔµÄ¡¾ÄæÊ±ÕëĞı×ª¡¿ºóĞı×ª¿í¶È
+    width = 0;
     X = sum(imrotate(MatOfPic_Crop{c},-angle)); %½«Í¼¡¾Ë³Ê±Õë¡¿Ğı×ªangle¸ö½Ç¶È£¬²¢Í¶Ó°
     [~,l] = size(X);
     for b = 1:l
         if X(1,b) ~= 0              %¼ÆÊıÇó¿í¶È
-           count = count + 1;
+           width = width + 1;
         end
     end
-    a(4,c) = count;     %aÊı×éµÚËÄĞĞÓÃÓÚ´æ´¢ÅĞ¶ÏÊ±½øĞĞ²âÊÔĞÔµÄ¡¾Ë³Ê±ÕëĞı×ª¡¿ºóĞı×ª¿í¶È
-    count = 0;
+    a(4,c) = width;     %aÊı×éµÚËÄĞĞÓÃÓÚ´æ´¢ÅĞ¶ÏÊ±½øĞĞ²âÊÔĞÔµÄ¡¾Ë³Ê±ÕëĞı×ª¡¿ºóĞı×ª¿í¶È
+    width = 0;
     %=======================================================
-    
+    subplot(132);title('½ÃÕıÇúÏß');hold on;
     %=======================================================
     %Ğı×ª
     %=======================================================
@@ -194,38 +194,40 @@ for c = 1:count
             %%%%µÚÒ»´Î´¹Ö±Í¶Ó°
             %================================================
             X = sum(MatOfPic_Crop{c}); %µÚÒ»´Î´¹Ö±Í¶Ó°
-            figure;plot(X);
-            [r1,l1] = size(X);
+%             figure;plot(X);
+            cla;plot(X);pause(0.1);cla;
+            [~,l1] = size(X);
             for b = 1:l1
                 if X(1,b) ~= 0              %¼ÆÊıÇó¿í¶È
                     %  a(1,1) = a(1,1) + 1;
-                    count = count + 1;
+                    width = width + 1;
                 end
             end
-            a(1,c) = count;
-            count = 0;
+            a(1,c) = width;
+            width = 0;
             %==========================================================
             MatOfPic_Crop{c} = imrotate(MatOfPic_Crop{c},angle);  %½«Í¼¡¾ÄæÊ±Õë¡¿Ğı×ªangle¸ö½Ç¶È
             %==========================================================
             %%%%µÚ¶ş´Î´¹Ö±Í¶Ó°
             %==========================================================
             Y = sum(MatOfPic_Crop{c}); %µÚ¶ş´Î´¹Ö±Í¶Ó°
-            figure;plot(Y);
-            [r2,l2] = size(Y);
+%             figure;plot(Y);
+            plot(Y);pause(0.1);
+            [~,l2] = size(Y);
             for b = 1:l2
                 if Y(1,b) ~= 0              %¼ÆÊı
                     %    a(2,1) = a(2,1) + 1;
-                    count = count + 1;
+                    width = width + 1;
                 end
             end
-            a(2,c) = count;
+            a(2,c) = width;
             %==========================================================
             %ÅĞ¶Ï
             if a(2,c) >= a(1,c)
                 flag = 1;
                 MatOfPic_Crop{c} = imrotate(MatOfPic_Crop{c},-angle);
             else
-                count = 0;
+                width = 0;
             end
         end
     else  %Ïò×óÆ«µÄÊ±ºò
@@ -234,30 +236,32 @@ for c = 1:count
             %%%%µÚÒ»´Î´¹Ö±Í¶Ó°
             %================================================
             X= sum(MatOfPic_Crop{c}); %µÚÒ»´Î´¹Ö±Í¶Ó°
-            figure;plot(X);
-            [r1,l1] = size(X);    %XÎ»Ò»ĞĞl1ÁĞµÄ¾ØÕó
+%             figure;plot(X);
+            cla;plot(X);pause(0.1);cla;
+            [~,l1] = size(X);    %XÎ»Ò»ĞĞl1ÁĞµÄ¾ØÕó
             for b = 1:l1
                 if X(1,b) ~= 0              %¼ÆÊıÇó¿í¶È
-                    count = count + 1;
+                    width = width + 1;
                 end
             end
-            a(1,c) = count;
-            count = 0;
+            a(1,c) = width;
+            width = 0;
             %==========================================================
             MatOfPic_Crop{c} = imrotate(MatOfPic_Crop{c},-angle);  %½«Í¼¡¾Ë³Ê±Õë¡¿Ğı×ªangle¸ö½Ç¶È
             %==========================================================
             %%%%µÚ¶ş´Î´¹Ö±Í¶Ó°
             %==========================================================
             Y= sum(MatOfPic_Crop{c}); %µÚ¶ş´Î´¹Ö±Í¶Ó°
-            figure;plot(Y);
-            [r2,l2] = size(Y);
+%             figure;plot(Y);
+            plot(Y);pause(0.1);
+            [~,l2] = size(Y);
             for b = 1:l2
                 if Y(1,b) ~= 0              %¼ÆÊı
-                    count = count + 1;
+                    width = width + 1;
                 end
             end
-            a(2,c) = count;
-            count = 0;
+            a(2,c) = width;
+            width = 0;
             %==========================================================
             %ÅĞ¶Ï
             if a(2,c) >= a(1,c)
@@ -267,7 +271,30 @@ for c = 1:count
         end
     end  
         
-    fprintf('µÚ%d¸ùÉ´¹ÜÍ¼Ïñ½ÃÕıÍê³É£º£©\n',c);
-    figure;imshow(MatOfPic_Crop{c});  %ÏÔÊ¾µ±Ç°µ÷ÕûµÄÍ¼Ïñ
+    fprintf('µÚ%d¸ùÉ´¹ÜÍ¼Ïñ½ÃÕıÍê³É :)\n',c);
+    subplot(133);imshow(MatOfPic_Crop{c}); title('½ÃÕıºó');%ÏÔÊ¾µ±Ç°µ÷ÕûµÄÍ¼Ïñ
 end
-disp('Í¼Ïñ½ÃÕıÍê³É£º£©');    
+disp('Í¼Ïñ½ÃÕıÍê³É£º£©');
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ¶ÔÍ¼ÏñÌØÕ÷½øĞĞÅĞ¶Ï
+% ¶Ô±ê×¼ÎïÌå½øĞĞ´¹Ö±Í¶Ó°£¬È»ºó¸ù¾İÍ¶Ó°¿í¶ÈÅĞ¶ÏÉ´¹ÜÊÇ·ñ²ĞÁôÓĞÉ´Ïß
+%½«a¾ØÕóµÚÎåĞĞÓÃÓÚ´æ´¢½ÃÕıÖ®ºóµÄÉ´¹Ü´¹Ö±Í¶Ó°
+%Éè¶¨¿í¶ÈãĞÖµÎª10¸öÏñËØ£¬³¬¹ıÊ®¸öÔòÊÓÎªÓĞÉ´Ïß
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+for c = 1:count
+    X = sum(MatOfPic_Crop{c});
+    [~,l3] = size(X);
+    for b = 1:l3
+        if X(1,b) ~= 0
+            width = width + 1;            
+        end
+    end
+    a(5,c) = width;
+    width =0;
+    if a(5,c) > a(5,1)+10
+        fprintf('µÚ%d¸ùÉ´¹Ü±íÃæÓĞÎ´³ı¾¡µÄÉ´Ïß :( \n',c );
+    else
+        fprintf('µÚ%d¸ùÉ´¹Ü±íÃæ²»º¬ÓĞ¾íÇúµÄÉ´Ïß :) \n',c );
+    end
+end
