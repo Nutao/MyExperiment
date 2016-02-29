@@ -276,25 +276,45 @@ for c = 1:count
 end
 disp('图像矫正完成：）');
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 对图像特征进行判断
-% 对标准物体进行垂直投影，然后根据投影宽度判断纱管是否残留有纱线
-%将a矩阵第五行用于存储矫正之后的纱管垂直投影
-%设定宽度阈值为10个像素，超过十个则视为有纱线
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for c = 1:count
-    X = sum(MatOfPic_Crop{c});
-    [~,l3] = size(X);
-    for b = 1:l3
-        if X(1,b) ~= 0
-            width = width + 1;            
-        end
-    end
-    a(5,c) = width;
-    width =0;
-    if a(5,c) > a(5,1)+10
+    [x,y] = find(MatOfPic_Crop{1,c}==1); %获取每一个矩阵中值为一的部分的矩阵。
+    xmin = min(x(:));  %找行最小值
+    xmax = max(x(:));  %找行最大值
+    ymin = min(y(:));  %找列最小值
+    ymax = max(y(:));  %找列最大值
+    dx = xmax - xmin; %高
+    dy = ymax - ymin; %宽
+    
+    %绘出原图
+    figure;subimage(MatOfPic_Crop{1,c});title('确定图像位置');
+    %在原图上绘出矩形标记
+    rectangle('Position',[ymin,xmin,dy,dx],'EdgeColor','r');
+    %将纱管精确地截取下来,放在 MatOfPic_Crop第二行
+    MatOfPic_Crop{2,c} = MatOfPic_Crop{1,c}(xmin:xmax,ymin:ymax);
+    %用MatOfPic_Crop的第三行存纱管的第一段
+    MatOfPic_Crop{3,c} = MatOfPic_Crop{1,c}(xmin:xmin+(1/3)*dx,ymin:ymax);
+    figure;subplot(131);imshow(MatOfPic_Crop{3,c});title('第一段');
+    %用MatOfPic_Crop的第四行存纱管的第二段
+    MatOfPic_Crop{4,c} = MatOfPic_Crop{1,c}(xmin+(1/3)*dx:xmin+(2/3)*dx,ymin:ymax);
+    subplot(132);imshow(MatOfPic_Crop{4,c});title('第二段');
+    %用MatOfPic_Crop的第五行存纱管的第三段
+    MatOfPic_Crop{5,c} = MatOfPic_Crop{1,c}(xmin+(2/3)*dx:xmin+(3/3)*dx,ymin:ymax);
+    subplot(133);imshow(MatOfPic_Crop{5,c});title('第三段');
+    %将截取下来的每一段进行投影，然后将投影数据存入MatOfPic_Crop{6，1}
+    MatOfPic_Crop{6,1}(1,c) = mytest(MatOfPic_Crop{3,c});
+    MatOfPic_Crop{6,1}(2,c) = mytest(MatOfPic_Crop{4,c});
+    MatOfPic_Crop{6,1}(3,c) = mytest(MatOfPic_Crop{5,c});
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     判断方式：
+%         如果投影宽度最大值大于标准纱管，则表明其有尾纱
+%         如果投影宽度最大值小于或等于标准纱管，则对截取部分投影宽度进行比对
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    if max(MatOfPic_Crop{6,1}(:,c)) > max(MatOfPic_Crop{6,1}(:,1))
         fprintf('第%d根纱管表面有未除尽的纱线 :( \n',c );
+    elseif MatOfPic_Crop{6,1}(1,c) > MatOfPic_Crop{6,1}(1,1) || MatOfPic_Crop{6,1}(2,c) > MatOfPic_Crop{6,1}(2,1) || MatOfPic_Crop{6,1}(3,c) > MatOfPic_Crop{6,1}(3,1)
+             fprintf('第%d根纱管表面有未除尽的纱线 :( \n',c );
     else
-        fprintf('第%d根纱管表面不含有卷曲的纱线 :) \n',c );
-    end
+            fprintf('第%d根纱管表面不含有卷曲的纱线 :) \n',c );
+    end                 
 end
